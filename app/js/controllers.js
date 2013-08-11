@@ -33,8 +33,7 @@ angular.module('myApp.controllers', []).controller('mainCtrl',
 			$scope.model.slices = generateRandomSlices($scope.model);
 
 			$scope.regenerateSlices = function() {
-				console.log('regen called');
-				$scope.model.slices = generateRandomSlices($scope.model);
+							$scope.model.slices = generateRandomSlices($scope.model);
 			};
 
 			$scope.$watch('model.numberOfSlices', function() {
