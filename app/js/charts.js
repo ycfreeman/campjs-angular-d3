@@ -38,6 +38,84 @@ d3.custom.pieChart = function module() {
 
 	var vis, arc_group, label_group, center_group, paths, whiteCircle;
 
+	// /////////////////////////////////////////////////////////
+	// FUNCTIONS //////////////////////////////////////////////
+	// /////////////////////////////////////////////////////////
+
+	// Interpolate the arcs in data space.
+	function pieTween(d, i) {
+		var s0;
+		var e0;
+		if (oldPieData[i]) {
+			s0 = oldPieData[i].startAngle;
+			e0 = oldPieData[i].endAngle;
+		} else if (!(oldPieData[i]) && oldPieData[i - 1]) {
+			s0 = oldPieData[i - 1].endAngle;
+			e0 = oldPieData[i - 1].endAngle;
+		} else if (!(oldPieData[i - 1])
+				&& oldPieData.length > 0) {
+			s0 = oldPieData[oldPieData.length - 1].endAngle;
+			e0 = oldPieData[oldPieData.length - 1].endAngle;
+		} else {
+			s0 = 0;
+			e0 = 0;
+		}
+		var i = d3.interpolate({
+			startAngle : s0,
+			endAngle : e0
+		}, {
+			startAngle : d.startAngle,
+			endAngle : d.endAngle
+		});
+		return function(t) {
+			var b = i(t);
+			return arc(b);
+		};
+	}
+
+	function removePieTween(d, i) {
+		s0 = 2 * Math.PI;
+		e0 = 2 * Math.PI;
+		var i = d3.interpolate({
+			startAngle : d.startAngle,
+			endAngle : d.endAngle
+		}, {
+			startAngle : s0,
+			endAngle : e0
+		});
+		return function(t) {
+			var b = i(t);
+			return arc(b);
+		};
+	}
+
+	function textTween(d, i) {
+		var a;
+		if (oldPieData[i]) {
+			a = (oldPieData[i].startAngle
+					+ oldPieData[i].endAngle - Math.PI) / 2;
+		} else if (!(oldPieData[i]) && oldPieData[i - 1]) {
+			a = (oldPieData[i - 1].startAngle
+					+ oldPieData[i - 1].endAngle - Math.PI) / 2;
+		} else if (!(oldPieData[i - 1])
+				&& oldPieData.length > 0) {
+			a = (oldPieData[oldPieData.length - 1].startAngle
+					+ oldPieData[oldPieData.length - 1].endAngle - Math.PI) / 2;
+		} else {
+			a = 0;
+		}
+		var b = (d.startAngle + d.endAngle - Math.PI) / 2;
+
+		var fn = d3.interpolateNumber(a, b);
+		return function(t) {
+			var val = fn(t);
+			return "translate(" + Math.cos(val)
+					* (r + textOffset) + "," + Math.sin(val)
+					* (r + textOffset) + ")";
+		};
+	}
+
+
 	function exports(_selection) {
 		_selection
 				.each(function(_data) {
@@ -245,82 +323,7 @@ d3.custom.pieChart = function module() {
 						}
 					}
 
-					// /////////////////////////////////////////////////////////
-					// FUNCTIONS //////////////////////////////////////////////
-					// /////////////////////////////////////////////////////////
-
-					// Interpolate the arcs in data space.
-					function pieTween(d, i) {
-						var s0;
-						var e0;
-						if (oldPieData[i]) {
-							s0 = oldPieData[i].startAngle;
-							e0 = oldPieData[i].endAngle;
-						} else if (!(oldPieData[i]) && oldPieData[i - 1]) {
-							s0 = oldPieData[i - 1].endAngle;
-							e0 = oldPieData[i - 1].endAngle;
-						} else if (!(oldPieData[i - 1])
-								&& oldPieData.length > 0) {
-							s0 = oldPieData[oldPieData.length - 1].endAngle;
-							e0 = oldPieData[oldPieData.length - 1].endAngle;
-						} else {
-							s0 = 0;
-							e0 = 0;
-						}
-						var i = d3.interpolate({
-							startAngle : s0,
-							endAngle : e0
-						}, {
-							startAngle : d.startAngle,
-							endAngle : d.endAngle
-						});
-						return function(t) {
-							var b = i(t);
-							return arc(b);
-						};
-					}
-
-					function removePieTween(d, i) {
-						s0 = 2 * Math.PI;
-						e0 = 2 * Math.PI;
-						var i = d3.interpolate({
-							startAngle : d.startAngle,
-							endAngle : d.endAngle
-						}, {
-							startAngle : s0,
-							endAngle : e0
-						});
-						return function(t) {
-							var b = i(t);
-							return arc(b);
-						};
-					}
-
-					function textTween(d, i) {
-						var a;
-						if (oldPieData[i]) {
-							a = (oldPieData[i].startAngle
-									+ oldPieData[i].endAngle - Math.PI) / 2;
-						} else if (!(oldPieData[i]) && oldPieData[i - 1]) {
-							a = (oldPieData[i - 1].startAngle
-									+ oldPieData[i - 1].endAngle - Math.PI) / 2;
-						} else if (!(oldPieData[i - 1])
-								&& oldPieData.length > 0) {
-							a = (oldPieData[oldPieData.length - 1].startAngle
-									+ oldPieData[oldPieData.length - 1].endAngle - Math.PI) / 2;
-						} else {
-							a = 0;
-						}
-						var b = (d.startAngle + d.endAngle - Math.PI) / 2;
-
-						var fn = d3.interpolateNumber(a, b);
-						return function(t) {
-							var val = fn(t);
-							return "translate(" + Math.cos(val)
-									* (r + textOffset) + "," + Math.sin(val)
-									* (r + textOffset) + ")";
-						};
-					}
+					
 				});
 	}
 
