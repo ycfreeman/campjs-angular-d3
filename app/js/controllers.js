@@ -17,16 +17,18 @@ angular.module('myApp.controllers', []).controller('mainCtrl',
 				// potential values
 				// for each item
 				var arraySize = model.numberOfSlices;
-				function fillArray() {
-					return {
-						value : Math.ceil(Math.random() * (arrayRange))
-					};
-				}
+			
 
 				model.slices = d3.range(arraySize).map(fillArray);
 
 				return model.slices;
 			};
+			
+				function fillArray() {
+					return {
+						value : Math.ceil(Math.random() * (arrayRange))
+					};
+				}
 			//
 			$scope.model.slices = generateRandomSlices($scope.model);
 
