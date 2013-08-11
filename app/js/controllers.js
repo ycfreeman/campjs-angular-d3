@@ -2,10 +2,41 @@
 
 /* Controllers */
 
-angular.module('myApp.controllers', []).
-  controller('MyCtrl1', [function() {
+angular.module('myApp.controllers', []).controller('mainCtrl',
+		function($scope, d3) {
+			$scope.model = {
+				numberOfSlices : 3,
+				slices : []
+			};
 
-  }])
-  .controller('MyCtrl2', [function() {
+			// initial slices
 
-  }]);
+			var generateRandomSlices = function(model) {
+
+				var arrayRange = 100; // range of
+				// potential values
+				// for each item
+				var arraySize = model.numberOfSlices;
+				function fillArray() {
+					return {
+						value : Math.ceil(Math.random() * (arrayRange))
+					};
+				}
+
+				model.slices = d3.range(arraySize).map(fillArray);
+
+				return model.slices;
+			};
+			//
+			$scope.model.slices = generateRandomSlices($scope.model);
+
+			$scope.regenerateSlices = function() {
+				console.log('regen called');
+				$scope.model.slices = generateRandomSlices($scope.model);
+			};
+
+			$scope.$watch('model.numberOfSlices', function() {
+				$scope.model.slices = generateRandomSlices($scope.model);
+			});
+
+		});
