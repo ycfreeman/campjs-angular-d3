@@ -1,6 +1,16 @@
 svg {
 	display: block;
 	margin: 0 auto;
-	max-width: 100%;
+	width: 100%;
 	height:auto;
+}
+
+.arc path
+{
+	transition:all 0.2s ease-in-out;
+}
+
+.arc path:hover
+{
+	transform:scale(1.15);
 }

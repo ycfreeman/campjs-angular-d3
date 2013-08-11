@@ -1,4 +1,4 @@
 # angular+d3
 
-toy project about putting angular in use with d3
+simple toy project about putting angularjs in use with d3js built in campjs
 
